@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>::::: Visitor Information :::::</title>
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="assets/css/form-elements.css">
+<link rel="stylesheet" href="assets/css/style.css">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+<!-- Favicon and touch icons -->
+<link rel="shortcut icon" href="assets/ico/favicon.png">
+<!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">-->
+</head>
+
+<body>
+
+<!-- Top menu -->
+<nav class="navbar navbar-inverse navbar-no-bg" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+      <a href="http://www.essindia.com/" target="_blank" class="navbar-brand">Eastern Software Systems</a> </div>
+    <!-- Collect the nav links, forms, and other content for toggling --> 
+    <!-- <div class="collapse navbar-collapse" id="top-navbar-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><span class="li-text"> Put some text or </span> <a href="#"><strong>links</strong></a> <span class="li-text"> here, or some icons: </span> <span class="li-social"> <a href="https://www.facebook.com/essindia" target="_blank"><i class="fa fa-facebook"></i></a> <a href="https://twitter.com/#!/ESS_India" target="_blank"><i class="fa fa-twitter"></i></a> <a href="https://www.linkedin.com/company/eastern-software-systems" target="_blank"><i class="fa fa-linkedin"></i></a> <a href="#" target="_blank"><i class="fa fa-envelope"></i></a> <a href="#"><i class="fa fa-skype"></i></a> </span> </li>
+      </ul>
+    </div>--> 
+  </div>
+</nav>
+
+<!-- Top content -->
+<div class="top-content">
+  <div class="inner-bg">
+    <div class="container">
+      <div class="row"> 
+        <!--<div class="col-sm-7 text">
+          <h1><strong>Bootstrap</strong> Registration Form</h1>
+          <div class="description">
+            <p> This is a free responsive registration form made with Bootstrap. 
+              Download it on <a href="http://azmind.com"><strong>AZMIND</strong></a>, customize and use it as you like! </p>
+          </div>
+          <div class="top-big-link"> <a class="btn btn-link-1" href="#">Button 1</a> <a class="btn btn-link-2" href="#">Button 2</a> </div>
+        </div>-->
+        <div class="col-sm-12 form-box">
+          <div class="form-top">
+            <div class="form-top-left">
+              <h3>Visitor Information</h3>
+              <p>Fill in the form below to get instant access:</p>
+            </div>
+            <div class="form-top-right"> <i class="fa fa-pencil"></i> </div>
+          </div>
+          <div class="form-bottom">
+            <form role="form" action="" method="post" class="registration-form">
+              <div class="form-group" style="width:100%;">
+                <label class="sr-only" for="form-first-name">Type Of Visitor</label>
+                <select name="Type-Of-Visitor" placeholder="Type Of Visitor..." class="form-first-name form-control" id="TypeOfVisitor">
+                  <option value="" selected="">Regular</option>
+                  <option value="1">Occasinal</option>
+                </select>
+                <!--<input type="text" name="Visitor-Name" placeholder="Visitor Name..." class="form-first-name form-control" id="VisitorName">--> 
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Visitor Name</label>
+                <input type="text" name="Visitor-Name" placeholder="Visitor Name..." class="form-first-name form-control" id="VisitorName">
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Company Name</label>
+                <input type="text" name="Company-Name" placeholder="Company Name..." class="form-last-name form-control" id="CompanyName">
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Location</label>
+                <!--<input type="text" name="Location" placeholder="Location..." class="form-first-name form-control" id="Location">-->
+                <textarea name="Location" cols="0" rows="0" placeholder="Location..." class="form-first-name form-control" id="Location"></textarea>
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Contact Number</label>
+                <input type="text" name="Contact-Number" placeholder="Contact Number..." class="form-last-name form-control" id="Contact Number">
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Whom to Meet in ICAT</label>
+                <select name="Whom-to-Meet-in-ICAT" placeholder="Whom to Meet in ICAT..." class="form-first-name form-control" id="WhomToMeetInICAT">
+                  <option selected="" value="">ABC</option>
+                  <option value="1">XYZ</option>
+                </select>
+                <!--<input type="text" name="Whom-to-Meet-in-ICAT" placeholder="Whom to Meet in ICAT..." class="form-first-name form-control" id="WhomToMeetInICAT">--> 
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Purpose</label>
+                <input type="text" name="Purpose" placeholder="Purpose..." class="form-last-name form-control" id="Purpose">
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Department of Visit</label>
+                <!--<input type="text" name="Department-of-Visit" placeholder="Department of Visit..." class="form-first-name form-control" id="DepartmentOfVisit">-->
+                <select name="Department-of-Visit" placeholder="Department of Visit..." class="form-first-name form-control" id="DepartmentOfVisit">
+                  <option selected="" value="">ABC</option>
+                  <option value="1">XYZ</option>
+                </select>
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Individual / Group</label>
+                <select id="IndividualGroup" name="subject" class="form-first-name form-control">
+                  <option selected="" value="">Individual</option>
+                  <option value="1">Group</option>
+                </select>
+                <!--<input type="text" name="Individual-Group" placeholder="Individual / Group..." class="form-last-name form-control" id="IndividualGroup">--> 
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Number of Persons</label>
+                <select id="select" name="subject" class="form-first-name form-control">
+                  <option selected="" value="">1</option>
+                  <option value="1">2</option>
+                  <option value="1">3</option>
+                  <option value="1">4</option>
+                  <option value="1">5</option>
+                  <option value="1">6</option>
+                  <option value="1">7</option>
+                  <option value="1">8</option>
+                  <option value="1">9</option>
+                  <option value="1">10</option>
+                </select>
+                <!-- <input type="text" name="Number-of-persons" placeholder="Number of Persons..." class="form-first-name form-control" id="NumberOfPersons">--> 
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Material Declaration / Belongings</label>
+                <!--<input type="text" name="MaterialDeclarationBelongings" placeholder="Material Declaration / Belongings..." class="form-last-name form-control" id="MaterialDeclarationBelongings">-->
+                <textarea name="MaterialDeclarationBelongings" placeholder="Material Declaration / Belongings..." class="form-last-name form-control" id="MaterialDeclarationBelongings"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Time In</label>
+                <input type="text" name="TimeIn" placeholder="Time In..." class="form-first-name form-control" id="TimeIn">
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Time Out</label>
+                <input type="text" name="Time-Out" placeholder="Time Out..." class="form-last-name form-control" id="Time Out">
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="form-first-name">Material Returnable / Non-Returnable</label>
+                <!-- <input type="text" name="Material-Returnable-Non-Returnable" placeholder="Material Returnable / Non-Returnable..." class="form-first-name form-control" id="MaterialReturnableNonReturnable">-->
+                <select name="Material-Returnable-Non-Returnable" placeholder="Material Returnable / Non-Returnable..." class="form-first-name form-control" id="MaterialReturnableNonReturnable">
+                  <option value="" selected="">Yes</option>
+                  <option value="1">No</option>
+                </select>
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-last-name">Whether Armed?</label>
+                <select id="WhetherArmed" name="subject" class="form-first-name form-control">
+                  <option selected="" value="">Yes</option>
+                  <option value="1">No</option>
+                </select>
+                <!--<input type="text" name="Company-Name" placeholder="Company Name..." class="form-last-name form-control" id="CompanyName">--> 
+              </div>
+              <div class="form-group ">
+                <label class="sr-only" for="form-about-yourself">Remarks</label>
+                <textarea name="form-about-yourself" placeholder="Remarks..." 
+			                        				class="form-about-yourself form-control" id="Remarks"></textarea>
+              </div>
+              <div class="form-group left-mar">
+                <label class="sr-only" for="form-email">Identity Card Number</label>
+                <input type="text" name="Identity-Card-Number" placeholder="Identity Card Number..." class="form-email form-control" id="IdentityCardNumber">
+              </div>
+              <div class="col-sm-12">
+                <button type="submit" class="btn">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Javascript --> 
+<script src="assets/js/jquery-1.11.1.min.js"></script> 
+<script src="assets/bootstrap/js/bootstrap.min.js"></script> 
+<script src="assets/js/jquery.backstretch.min.js"></script> 
+<script src="assets/js/retina-1.1.0.min.js"></script> 
+<script src="assets/js/scripts.js"></script> 
+
+<!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+</body>
+</html>
