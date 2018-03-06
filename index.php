@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
-include 'header.php';
 session_start();
+include 'header.php';
 include 'db.php';
 global $con;
 
@@ -17,7 +17,7 @@ oci_fetch_all($get, $output);
 
 /* * ********EDIT********* */
 
-$editid = $_GET['id'];
+$editid = @$_GET['id'];
 if (@$_REQUEST['Cancel'] == 'Cancel') {
     $Insertstatus = "Update EBIZ.VISITOR_GATE_PASS set STATUS='CANCELED' WHERE ID = $editid";
     $statement = oci_parse($con, $Insertstatus);
@@ -42,7 +42,7 @@ if (@$_REQUEST['Cancel'] == 'Cancel') {
     }
 }
 
-$getdetails = "SELECT lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,ID, VISITOR_TYPE, NUM_OF_PERSON, GATE_PASS_DATE, PURPOSE, ARMED, MATERIAL, GROUP_INDIVIDUAL, BELONGINGS, CONTACT_NUMBER, VISITOR_NAME, ORG_NAME, LOCATION, DEPT_ID, TIME_IN, TIME_OUT, EMP_MEET, ID_NUM, STATUS FROM EBIZ.VISITOR_GATE_PASS where ID=$editid";
+$getdetails = "SELECT lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,ID, VISITOR_TYPE, NUM_OF_PERSON, GATE_PASS_DATE, PURPOSE, ARMED, MATERIAL, GROUP_INDIVIDUAL, BELONGINGS, CONTACT_NUMBER, VISITOR_NAME, ORG_NAME, LOCATION, DEPT_ID, TIME_IN, TIME_OUT, EMP_MEET, ID_NUM, STATUS, IMG_PATH FROM EBIZ.VISITOR_GATE_PASS where ID='$editid' ";
 $statement = oci_parse($con, $getdetails);
 oci_execute($statement);
 oci_fetch_all($statement, $res2);
@@ -53,7 +53,7 @@ $arr = array();
 for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
 
     // echo "<pre>";print_r($res2['GATE_PASS_NO'][0]);
-    $arr[] = array('ID' => $res2['ID'][$a], 'NUM_OF_PERSON' => $res2['NUM_OF_PERSON'][$a], 'VISITOR_TYPE' => $res2['VISITOR_TYPE'][$a], 'PURPOSE' => $res2['PURPOSE'][$a], 'ARMED' => $res2['ARMED'][$a], 'MATERIAL' => $res2['MATERIAL'][$a], 'GROUP_INDIVIDUAL' => $res2['GROUP_INDIVIDUAL'][$a], 'BELONGINGS' => $res2['BELONGINGS'][$a], 'CONTACT_NUMBER' => $res2['CONTACT_NUMBER'][$a], 'GATE_PASS_NO' => $res2['GATE_PASS_NO'][$a], 'GATE_PASS_DATE' => $res2['GATE_PASS_DATE'][$a], 'VISITOR_NAME' => $res2['VISITOR_NAME'][$a], 'ORG_NAME' => $res2['ORG_NAME'][$a], 'LOCATION' => $res2['LOCATION'][$a], 'DEPT_ID' => $res2['DEPT_ID'][$a], 'TIME_IN' => $res2['TIME_IN'][$a], 'TIME_OUT' => $res2['TIME_OUT'][$a], 'EMP_MEET' => $res2['EMP_MEET'][$a], 'ID_NUM' => $res2['ID_NUM'][$a], 'STATUS' => $res2['STATUS'][$a]);
+    $arr[] = array('ID' => $res2['ID'][$a], 'NUM_OF_PERSON' => $res2['NUM_OF_PERSON'][$a], 'VISITOR_TYPE' => $res2['VISITOR_TYPE'][$a], 'PURPOSE' => $res2['PURPOSE'][$a], 'ARMED' => $res2['ARMED'][$a], 'MATERIAL' => $res2['MATERIAL'][$a], 'GROUP_INDIVIDUAL' => $res2['GROUP_INDIVIDUAL'][$a], 'BELONGINGS' => $res2['BELONGINGS'][$a], 'CONTACT_NUMBER' => $res2['CONTACT_NUMBER'][$a], 'GATE_PASS_NO' => $res2['GATE_PASS_NO'][$a], 'GATE_PASS_DATE' => $res2['GATE_PASS_DATE'][$a], 'VISITOR_NAME' => $res2['VISITOR_NAME'][$a], 'ORG_NAME' => $res2['ORG_NAME'][$a], 'LOCATION' => $res2['LOCATION'][$a], 'DEPT_ID' => $res2['DEPT_ID'][$a], 'TIME_IN' => $res2['TIME_IN'][$a], 'TIME_OUT' => $res2['TIME_OUT'][$a], 'EMP_MEET' => $res2['EMP_MEET'][$a], 'ID_NUM' => $res2['ID_NUM'][$a], 'STATUS' => $res2['STATUS'][$a], 'IMG_PATH' => $res2['IMG_PATH'][$a]);
 }
 
 //echo "<pre>";print_r($arr);die;
@@ -176,11 +176,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $GATE_PASS_DATE = date("d-m-Y");
             $date = date_create();
             $qry1 = "SELECT MAX(GATE_PASS_NO)as GATE_PASS_NO FROM EBIZ.VISITOR_GATE_PASS";
-            // echo $con;die;
             $valueinsert = oci_parse($con, $qry1);
             oci_execute($valueinsert);
             oci_fetch_all($valueinsert, $output);
-
+			//echo "<pre>"; print_r($output); die;
             $GATE_PASS_NO = $output['GATE_PASS_NO'][0] + 1;
             if ($editid == '') {
                 if ($_POST['TypeOfVisitor'] == 1) {
@@ -188,20 +187,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $name = $_POST['VisitorName'];
                 }		
-				
+				//echo $name; die;
+				if(empty($_POST['ImgPath']))
+					$imgpath = '';
+				else	
+					$imgpath = $_POST['ImgPath'];
 				$form_secret = isset($_POST["form_secret"])?$_POST["form_secret"]:'';
-				 
+				//echo $form_secret.":::::".$form_secret;  die;
+				//echo strcasecmp($form_secret, $_SESSION["FORM_SECRET"]); die;
 				if(isset($_SESSION["FORM_SECRET"])) {
 					if(strcasecmp($form_secret, $_SESSION["FORM_SECRET"]) === 0) {
-                $SQLInsert = "INSERT INTO EBIZ.VISITOR_GATE_PASS
-                (ID,VISITOR_TYPE, VISITOR_NAME, ORG_NAME, LOCATION, CONTACT_NUMBER, EMP_MEET, PURPOSE, DEPT_ID,
-                GROUP_INDIVIDUAL, NUM_OF_PERSON, BELONGINGS, TIME_IN, TIME_OUT, MATERIAL, ARMED, REMARKS, ID_NUM, GATE_PASS_NO, GATE_PASS_DATE, STATUS) 
-                VALUES ('" . $ID . "','" . $_POST['TypeOfVisitor'] . "','" . $_POST['VisitorName'] . "', '" . $_POST['OrganizationName'] . "', '" . $_POST['Location'] . "', '" . $_POST['ContactNumber'] . "', 
-                    '" . $_POST['WhomtoMeetinICAT'] . "', '" . $_POST['Purpose'] . "', '" . $_POST['DepartmentOfVisit'] . "', '" . $_POST['IndividualGroup'] . "', 
-                    '" . $_POST['NumberofPerson'] . "', '" . $_POST['MaterialDeclarationBelongings'] . "', '" . $_POST['TimeIn'] . "', '" . $_POST['TimeOut'] . "', 
-                    '" . $_POST['MaterialReturnableNonReturnable'] . "', '" . $_POST['WhetherArmed'] . "', '" . $_POST['Remarks'] . "', '" . $_POST['IdentityCardNumber'] . "', lpad('" . $GATE_PASS_NO . "',6,0), to_date('" . $GATE_PASS_DATE . "','dd-mm-yyyy'),'OPEN')";
-                // echo $conn;
-					 unset($_SESSION["FORM_SECRET"]);
+						$SQLInsert = "INSERT INTO EBIZ.VISITOR_GATE_PASS
+						(ID,VISITOR_TYPE, VISITOR_NAME, ORG_NAME, LOCATION, CONTACT_NUMBER, EMP_MEET, PURPOSE, DEPT_ID,
+						GROUP_INDIVIDUAL, NUM_OF_PERSON, BELONGINGS, TIME_IN, TIME_OUT, MATERIAL, ARMED, REMARKS, ID_NUM, GATE_PASS_NO, GATE_PASS_DATE, STATUS, IMG_PATH) 
+						VALUES ('" . $ID . "','" . $_POST['TypeOfVisitor'] . "','" . $_POST['VisitorName'] . "', '" . $_POST['OrganizationName'] . "', '" . $_POST['Location'] . "', '" . $_POST['ContactNumber'] . "', 
+							'" . $_POST['WhomtoMeetinICAT'] . "', '" . $_POST['Purpose'] . "', '" . $_POST['DepartmentOfVisit'] . "', '" . $_POST['IndividualGroup'] . "', 
+							'" . $_POST['NumberofPerson'] . "', '" . $_POST['MaterialDeclarationBelongings'] . "', '" . $_POST['TimeIn'] . "', '" . $_POST['TimeOut'] . "', 
+							'" . $_POST['MaterialReturnableNonReturnable'] . "', '" . $_POST['WhetherArmed'] . "', '" . $_POST['Remarks'] . "', '" . $_POST['IdentityCardNumber'] . "', lpad('" . $GATE_PASS_NO . "',6,0), to_date('" . $GATE_PASS_DATE . "','dd-mm-yyyy'),'OPEN','".$imgpath."')";
+							 //echo $SQLInsert; die;
 					}else {
 						//Invalid secret key
 					}
@@ -229,7 +232,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $statement = oci_parse($con, $SQLInsert);
             $save = oci_execute($statement);
-			
+ 	    unset($_SESSION["FORM_SECRET"]);
+					
             $comit = oci_commit($con);
             //oci_free_statement($statement);
             if (!$save) {
@@ -258,6 +262,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
 }
 ?>
+<script type='text/javascript'>
+$(document).ready(function(){
+$("#gatePass").validate({
+            rules : {
+                "VisitorName": { required : true },
+				"OrganizationName": { required : true },
+				"Location": { required : true },
+				"ContactNumber": { required : true, number : true },
+				"WhomtoMeetinICAT": { required : true },
+            	"Purpose": { required : true },
+            	"DepartmentOfVisit": { required : true },
+            	"NumberofPerson": { required : true },
+            },
+            messages : {
+                "VisitorName": { required : "Please Enter Visitor Name" },
+                "OrganizationName": { required : "Please Enter Organization Name" },
+                "Location": { required : "Please Enter Location Name" },
+                "ContactNumber": { required : "Please Enter Contact Number", number : "Please Enter Numeric Value" },
+                "WhomtoMeetinICAT": { required : "Please Select Whome To Meet In ICAT" },
+                "Purpose": { required : "Please Enter Purpose" },
+                "DepartmentOfVisit": { required : "Please Select Department" },
+                "NumberofPerson": { required : "Please Enter Number of Person" },
+            },
+            tooltip_options: {
+                '_all_': { placement: 'bottom' }
+            }
+        });
+});        
+
+</script>
+<?php
+	if(isset($_GET['id']) && !empty($_GET['id'])) {
+?>
+<script type="text/javascript">
+	   $(function () {
+			$('#IdentityCardNumber').rules('add',{
+				required:true,
+				message: {
+					required: "Please Enter Identity Card Number"
+				}
+			});
+	   });	
+</script>
+<?php } ?>  
 <?php 
 //ADDED BY ABHILASH JAISWAL 22-12-2015
 
@@ -289,7 +337,7 @@ $_SESSION['FORM_SECRET'] = $secret;
                     </div>
 					<div id="error" style="background-color: #fff;color: red"></div>
                     <div class="form-bottom">
-                        <form role="form" action="" method="post">
+                        <form role="form" action="" method="post" id="gatePass">
 							<input type='hidden' value = '<?php echo $_SESSION['FORM_SECRET']; ?>' name ='form_secret'> 
                             <div class="form-group">
                                 <label class="sr-only" for="form-first-name">Type Of Visitor</label>
@@ -420,7 +468,8 @@ $_SESSION['FORM_SECRET'] = $secret;
                                     });
                                 });
                             </script>
-                            <div class="form-group left-mar">
+							
+                          <div class="form-group left-mar">
                                 <label class="sr-only" for="form-first-name">Visitor Name</label>
                                 <input type="text" style="text-transform: uppercase" name="VisitorName" value="<?php if (!empty($arr[0]['VISITOR_NAME'])) echo $arr[0]['VISITOR_NAME']; ?>" placeholder="Visitor Name..." class="form-first-name form-control" id="VisitorName">
                                 <span class="error"> <?php echo $VisitorNameErr; ?></span> </div>
@@ -431,7 +480,7 @@ $_SESSION['FORM_SECRET'] = $secret;
                             <div class="form-group">
                                 <label class="sr-only" for="form-first-name">Location</label>
                                 <textarea name="Location" style="text-transform: uppercase" cols="0" rows="0"  placeholder="Location..." class="form-first-name form-control" id="Location"><?php if (!empty($arr[0]['LOCATION'])) echo $arr[0]['LOCATION']; ?></textarea>
-                            <span class="error"> <?php echo $ContactNumberErr; ?></span>
+                            <span class="error"> <?php echo $LocationErr; ?></span>
                             </div>
                             <div class="form-group left-mar">
                                 <label class="sr-only" for="form-last-name">Contact Number</label>
@@ -488,7 +537,7 @@ $_SESSION['FORM_SECRET'] = $secret;
                                 <select id="IndividualGroup" value="<?php echo $IndividualGroup; ?>" name="IndividualGroup" class="form-first-name form-control">
                                     <?php
 //if (!empty($arr[0]['GROUP_INDIVIDUAL'])) {
-                                    if ($arr[0]['GROUP_INDIVIDUAL'] == 1) {
+									if ($arr[0]['GROUP_INDIVIDUAL'] == 1) {
                                         ?>
                                         <option  value="1" selected>Individual</option>
                                         <option  value="2" >Group</option>
@@ -574,20 +623,103 @@ $_SESSION['FORM_SECRET'] = $secret;
                                     ?>
                                 </select>
                             </div>
-                            <div class="form-group left-mar">
+							<div class="form-group left-mar">
                                 <label class="sr-only" for="form-email">Identity Card Number</label>
                                 <input type="text" name="IdentityCardNumber" value="<?php if (!empty($arr[0]['ID_NUM'])) echo $arr[0]['ID_NUM']; ?>" placeholder="Identity Card Number..." class="form-email form-control" id="IdentityCardNumber">
                                 <span class="error"> <?php echo $IdentityCardNumberErr; ?></span>
                             </div>
+							 <div class="form-group left-mar" style="height:65px;">
+							 <label class="sr-only" for="form-email"></label>
+                                <input type="hidden" name="ImgPath" value="<?php if (!empty($arr[0]['IMG_PATH'])) echo $arr[0]['IMG_PATH']; ?>" id="ImgPath">
+                            
+							     <span class="error"> </span>
+                            </div>
+							<?php if(!isset($_GET['id'])) {
+								$style='height:260px;';
+							 } else {
+								 $style = '';
+							 }?>
+                            <div class="form-group" style="<?php echo $style; ?> ">
+								<?php
+								if(!isset($_GET['id'])) {
+									?>
+								<div id="content" align="center">
+								<script language="JavaScript">
+										document.write( webcam.get_html(240, 240) );
+								</script>
+							 </div>
+								<?php } ?>
+							 </div>
+								<?php if(!isset($_GET['id'])) {
+								$style='height:260px;padding:10% 10%;';
+							 } else {
+								 $style = '';
+							 }?>
+                            <div class="form-group left-mar" style="<?php echo $style; ?> ">	
+								<?php
+								if(!isset($_GET['id'])) {
+									?>
+									<!--<input type=button value="Configure settings" onClick="webcam.configure()" class="shiva">-->
+									&nbsp;&nbsp;
+									<input type=button value="Take Picture" onClick="take_snapshot()" class="shiva">
+								<?php } ?>
+							<script  type="text/javascript">
+								webcam.set_api_url( 'handleimage.php' );
+									webcam.set_quality( 90 ); // JPEG quality (1 - 100)
+									webcam.set_shutter_sound( true ); // play shutter click sound
+									webcam.set_hook( 'onComplete', 'my_completion_handler' );
+
+									function take_snapshot(){
+										// take snapshot and upload to server
+										document.getElementById('img').innerHTML = '<h1>Uploading...</h1>';
+										
+										webcam.snap();
+									}
+
+									function my_completion_handler(msg) {
+										// extract URL out of PHP output
+										if (msg!=200) {
+											// show JPEG image in page
+											
+											document.getElementById('img').innerHTML ='<h3>Upload Successfuly done</h3>'+msg;
+											var url =  msg;
+											document.getElementById('img').innerHTML ="<img src="+url+" class=\"img\">";
+											document.getElementById('ImgPath').value = msg;
+										
+											// reset camera for another shot
+											webcam.reset();
+										}
+										else {alert("Error occured we are trying to fix now: " + msg); }
+									}
+								</script>
+							 </div>
+                            <div class="form-group left-mar">
+							<?php 
+							if(!empty($arr[0]['IMG_PATH'])){ ?>
+							<div id="img" style=" height:140px; width:140px; float:left; margin-left:20px; margin-top:0px;">
+							
+							<?php	$url = $arr[0]['IMG_PATH']; 
+								echo "<img src='$url' class='img'>"; ?>
+							</div>
+							<?php 
+							} else {
+							?>
+							<div id="img" style=" height:240px; width:240px; float:left; margin-left:40px; margin-top:20px;">
+							
+							</div>
+							<?php } ?>
+							   
+							
+                            </div>
                             <div class="col-sm-12" style="margin:0px; padding:0px; text-align: center;">
-                                <input type="submit" id='submit' name="Submit" value="Submit" title="Submit"  style="width:15%; margin: 0 auto;">
-                                <input type="reset" id='reset' name="Reset" value="Reset" title="Reset" style="width:15%; margin: 0 auto;">
-                                <input type="button" onclick="redirect()" title="Exit" style="width:15%; " value="Exit">
+                                <input type="submit" id='submit' name="Submit" value="Submit" title="Submit"  style="width:15%; margin: 0 auto;" class="shiva">
+                                <input type="reset" id='reset' name="Reset" value="Reset" title="Reset" style="width:15%; margin: 0 auto;" class="shiva">
+                                <input type="button" onclick="redirect()" title="Exit" style="width:15%; " value="Exit" class="shiva">
                                 <?php if (!empty($editid) && $arr[0]['STATUS'] == 'OPEN') { ?>
-                                    <input type="button" name="Print" onclick="sendprint('<?php echo $editid; ?>')" value="Print" title="Print" id="Print" style="width:15%; margin: 0 auto;">
+                                    <input type="button" name="Print" onclick="sendprint('<?php echo $editid; ?>')" value="Print" class="shiva" title="Print" id="Print" style="width:15%; margin: 0 auto;">
                                 <?php } ?>
 <!--<input type="submit" name="Print" onclick="frames['frame1'].print()" value="Print" title="Print" id="Print" style="width:15%; margin: 0 auto;">-->
-                                <input type="submit" id='cancel' name="Cancel" value="Cancel" title="Cancel" style="width:15%; margin: 0 auto;">
+                                <input type="submit" id='cancel' name="Cancel" value="Cancel" title="Cancel"  class="shiva" style="width:15%; margin: 0 auto;">
 
                                 <!--<iframe src="print.php" style="display:none" name="frame1"></iframe>-->
 

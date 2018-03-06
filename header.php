@@ -8,12 +8,12 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/jquery-ui.css">
+		<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="assets/css/form-elements.css">
         <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
+        
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,16 +40,26 @@
 				</div>
             </div>
         </nav>
+<?php
+$host = $_SERVER['HTTP_HOST'];
+$root_chk = dirname($_SERVER['REQUEST_URI']);
+$root_url = strlen($root_chk)!=1?$root_chk:$_SERVER['REQUEST_URI'];
+$webroot = $host.$root_url;
 
+?>
         <!-- Javascript --> 
         <script src="assets/js/jquery-1.11.1.min.js"></script> 
-        <script src="assets/bootstrap/js/bootstrap.min.js"></script> 
+        <script src="assets/js/jquery-ui.js"></script>
+		<script src="assets/bootstrap/js/bootstrap.min.js"></script> 
         <script src="assets/js/jquery.backstretch.min.js"></script> 
         <script src="assets/js/retina-1.1.0.min.js"></script> 
         <script src="assets/js/scripts.js"></script> 
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-        <!--[if lt IE 10]>
+        <script src="assets/js/jquery.validate.js"></script>
+		<script src="assets/js/jquery-validate.bootstrap-tooltip.flickerfix.js"></script>
+		<script src="assets/js/jquery-validate.bootstrap-tooltip.js"></script>
+        								<script type="text/javascript" src="webcam.js"></script>
+
+		<!--[if lt IE 10]>
                     <script src="assets/js/placeholder.js"></script>
                 <![endif]-->
 

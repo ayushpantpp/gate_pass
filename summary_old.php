@@ -1,23 +1,7 @@
-<style>
-ul.paginate li {
-	display: inline-block;
-	padding: 3px;
-	 background: #2A49A5;
-    	border: 1px solid #082783;
-    	box-shadow: 0 1px #4C6BC7 inset;
-    	font-weight:bold;
-	color: white;
-	margin: 6px;
-}
-ul.paginate li.current {
-	background-color:orange;
-}
-</style>
 <?php
 error_reporting(0);
 include 'header.php';
 include 'db.php';
-include 'paging.php';
 
 global $con;
 
@@ -43,45 +27,34 @@ function getempname($ID) {
     return $name1;
 }
 
-if (!empty($_REQUEST['gtnumber_1'])) {
-    $conditions .= 'GATE_PASS_NO=' . $_REQUEST['gtnumber_1'] . ' AND ';
+if (!empty($_POST['gtnumber_1'])) {
+    $conditions .= 'GATE_PASS_NO=' . $_POST['gtnumber_1'] . ' AND ';
 }
-if (!empty($_REQUEST['gtnumber_2'])) {
-    $conditions .= "UPPER(VISITOR_NAME)='" . strtoupper($_REQUEST['gtnumber_2']) . "' AND ";
+if (!empty($_POST['gtnumber_2'])) {
+    $conditions .= "UPPER(VISITOR_NAME)='" . strtoupper($_POST['gtnumber_2']) . "' AND ";
 }
-if (!empty($_REQUEST['gtnumber_3'])) {
-    $conditions .= "UPPER(ORG_NAME)='" . strtoupper($_REQUEST['gtnumber_3']) . "' AND ";
+if (!empty($_POST['gtnumber_3'])) {
+    $conditions .= "UPPER(ORG_NAME)='" . strtoupper($_POST['gtnumber_3']) . "' AND ";
 }
-if (!empty($_REQUEST['dept'])) {
-    $conditions .= "DEPT_ID='" . $_REQUEST['dept'] . "' AND ";
+if (!empty($_POST['dept'])) {
+    $conditions .= "DEPT_ID='" . $_POST['dept'] . "' AND ";
 }
-if (!empty($_REQUEST['contactperson'])) {
-    $conditions .= "EMP_MEET='" . $_REQUEST['contactperson'] . "' AND ";
+if (!empty($_POST['contactperson'])) {
+    $conditions .= "EMP_MEET='" . $_POST['contactperson'] . "' AND ";
 }
-if (!empty($_REQUEST['fromdate'])) {
-    $conditions .= "GATE_PASS_DATE>='" . $_REQUEST['fromdate'] . "' AND ";
+if (!empty($_POST['fromdate'])) {
+    $conditions .= "GATE_PASS_DATE>='" . $_POST['fromdate'] . "' AND ";
 }
-if (!empty($_REQUEST['todate'])) {
-    $conditions .="GATE_PASS_DATE<='" . $_REQUEST['todate'] . "' AND ";
+if (!empty($_POST['todate'])) {
+    $conditions .="GATE_PASS_DATE<='" . $_POST['todate'] . "' AND ";
 }
-$limit = 20;
-if(isset($_GET['page']) && !empty($_GET['page']))
-	$page = $_GET['page'];
-else
-	$page = 1;
-$offset = ($page - 1) * $limit;
-$maxRnum = $offset + $limit;
-$countquery = "SELECT COUNT(ID) as totalgp FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 ORDER BY GATE_PASS_NO DESC";
-$getvisitordetail = "SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS,RWNUM FROM ( SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS,ROWNUM as RWNUM FROM (SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 ORDER BY GATE_PASS_NO DESC)) WHERE RWNUM > $offset AND RWNUM <= $maxRnum";
+
+$getvisitordetail = "SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 ORDER BY GATE_PASS_NO DESC";
 //die;
 $statement = oci_parse($con, $getvisitordetail);
 oci_execute($statement);
 oci_fetch_all($statement, $res2);
-$statement = oci_parse($con, $countquery);
-oci_execute($statement);
-oci_fetch_all($statement, $countarr);
-$count = $countarr['TOTALGP'][0];
-//echo "<pre>"; print_r($res2); die;
+
 //$GATE_PASS=$res2['GATE_PASS_NO'][1];
 
 $arr = array();
@@ -92,7 +65,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
         'ID_NUM' => $res2['ID_NUM'][$a], 'STATUS' => $res2['STATUS'][$a],);
 }
 //echo "<pre>";print_r($arr);
-//echo '<pre>' ;print_r($_REQUEST);
+//echo '<pre>' ;print_r($_POST);
 ?>
 
 <div class="top-content">
@@ -105,7 +78,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                             <div style="float:left; width:50%;">
                                 <h3>Visitor Gate Pass Summary</h3>
                             </div>
-                            <div style="float:left; width:50%; text-align:right;"> <a href="<?php echo $root_url; ?>/index.php"><b>Gate Pass Entry</b></a></div>
+                            <div style="float:left; width:50%; text-align:right;"> <a href="/icat/index.php"><b>Gate Pass Entry</b></a></div>
                         </div>
                         <div class="form-top-right"> <i class="fa fa-pencil"></i> </div>
 
@@ -113,23 +86,23 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                     <div class="form-bottom1" style="width:100%;">
                         <table class="col-md-12 table-bordered table-striped table-condensed cf">
                             <tr>
-                                <td><form name="summary" action="summary.php" method="GET">
+                                <td><form name="summary" action="summary.php" method="POST">
                                         <table width="100%" border="0" cellspacing="1" cellpadding="3">
                                             <tr>
                                                 <td width="13%" height="60px" align="right" valign="middle" class="right-mar">Gate Pass NO:
                                                 </td>
                                                 <td width="17%" align="left" valign="middle">  
-                                                    <input type="text" value="<?php echo $_REQUEST['gtnumber_1']; ?>" name="gtnumber_1" placeholder="Gate Pass No...." id="gtnumber_1" onkeyup="showgtno(this.value, '1');" autocomplete="off">
+                                                    <input type="text" value="<?php echo $_POST['gtnumber_1']; ?>" name="gtnumber_1" placeholder="Gate Pass No...." id="gtnumber_1" onkeyup="showgtno(this.value, '1');" autocomplete="off">
                                                     <ul id="gtnumber_show_1" class="gtnumber_show"></ul>
                                                 </td>
                                                 <td width="13%" height="60px" align="right" valign="middle" class="right-mar">Visitor Name:</td>
                                                 <td width="17%" align="left" valign="middle">
-                                                    <input type="text" value="<?php echo $_REQUEST['gtnumber_2']; ?>" name= "gtnumber_2" placeholder="Visitor Name...." id="gtnumber_2" onkeyup="showgtno(this.value, '2');"  autocomplete="off">
+                                                    <input type="text" value="<?php echo $_POST['gtnumber_2']; ?>" name= "gtnumber_2" placeholder="Visitor Name...." id="gtnumber_2" onkeyup="showgtno(this.value, '2');"  autocomplete="off">
                                                     <ul id="gtnumber_show_2" class="gtnumber_show"></ul>
                                                 </td>
                                                 <td width="13%" height="60px" align="right" valign="middle" class="right-mar">Organization Name:</td>
                                                 <td width="17%" align="left" valign="middle">
-                                                    <input  type="text" value="<?php echo $_REQUEST['gtnumber_3']; ?>" name= "gtnumber_3" placeholder="Organization Name...." id="gtnumber_3" onkeyup="showgtno(this.value, '3');"   autocomplete="off">
+                                                    <input  type="text" value="<?php echo $_POST['gtnumber_3']; ?>" name= "gtnumber_3" placeholder="Organization Name...." id="gtnumber_3" onkeyup="showgtno(this.value, '3');"   autocomplete="off">
                                                     <ul id="gtnumber_show_3" class="gtnumber_show"></ul>
                                                 </td>
                                             </tr>
@@ -147,7 +120,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                                         <?php
                                                         for ($i = 0; $i < count($res3['DEPT_ID']); $i++) {
                                                             $selected = '';
-                                                            if ($_REQUEST['dept'] == $res3['DEPT_ID'][$i]) {
+                                                            if ($_POST['dept'] == $res3['DEPT_ID'][$i]) {
                                                                 $selected = 'selected="selected"';
                                                             }
                                                             echo '<option  value="' . $res3['DEPT_ID'][$i] . '"' . $selected . '>' . getdeptname($res3['DEPT_ID'][$i]) . '</option>';
@@ -168,7 +141,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                                         <?php
                                                         for ($i = 0; $i < count($res4['EMP_MEET']); $i++) {
                                                             $selected = '';
-                                                            if ($_REQUEST['contactperson'] == $res4['EMP_MEET'][$i]) {
+                                                            if ($_POST['contactperson'] == $res4['EMP_MEET'][$i]) {
                                                                 $selected = 'selected="selected"';
                                                             }
                                                             echo '<option  value="' . $res4['EMP_MEET'][$i] . '"' . $selected . '>' . getempname($res4['EMP_MEET'][$i]) . '</option>';
@@ -181,8 +154,8 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                                 <td width="13%" height="60px" align="right" valign="middle" class="right-mar">From Date:</td>
                                                 <?php
                                                 $selected = '';
-                                                if (isset($_REQUEST['fromdate'])) {
-                                                    echo $selected = $_REQUEST['fromdate'];
+                                                if (isset($_POST['fromdate'])) {
+                                                    echo $selected = $_POST['fromdate'];
                                                     //die;
                                                 }
                                                 ?>
@@ -190,8 +163,8 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                                 <td width="13%" height="60px" align="right" valign="middle" class="right-mar">To Date:</td>
                                                 <?php
                                                 $selected = '';
-                                                if (isset($_REQUEST['todate'])) {
-                                                    echo $selected = $_REQUEST['todate'];
+                                                if (isset($_POST['todate'])) {
+                                                    echo $selected = $_POST['todate'];
                                                     //die;
                                                 }
                                                 ?>
@@ -332,17 +305,6 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                             <?php } ?>
                         </table>
                     </div>
-		    <div class="form-bottom table-responsive" >
-			<?php
-			$paging = new Paging();
-			$totalPages = ceil($count/$limit);
-			if($totalPages > 0){
-				echo $paging->pagesDiv($limit,$count,$page);
-			}
-			?>
-			
-		
-		    </div>
                 </div>
             </div>
         </div>

@@ -319,3 +319,20 @@ input#downloadfile{ float: right;
     margin-right: 2%;
     margin-top: 1%;}
 /*#print-padd td { text-align:right !important;}*/
+.img
+    { background:#ffffff;
+    padding:12px;
+    border:1px solid #999999; }
+.shiva{
+ -moz-user-select: none;
+    background: #2A49A5;
+    border: 1px solid #082783;
+    box-shadow: 0 1px #4C6BC7 inset;
+    color: white;
+	height: 46px;
+    padding: 3px 5px;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 #082783;
+    font: 18px Verdana, sans-serif;
+	width:165px;
+}

@@ -32,7 +32,8 @@ if(!empty($id))
 		$condition = "AND ID=".$id;
 else
 		$condition = '';
-$getvisitordetail = "SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,CONTACT_NUMBER,PURPOSE,NUM_OF_PERSON,MATERIAL,BELONGINGS,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 $condition ORDER BY GATE_PASS_NO DESC";
+$getvisitordetail = "select * from (SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,CONTACT_NUMBER,IMG_PATH,PURPOSE,NUM_OF_PERSON,MATERIAL,BELONGINGS,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS, row_number() over (order by GATE_PASS_NO desc) RWNUM FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 $condition ORDER BY GATE_PASS_NO DESC) where RWNUM = 1";
+//$getvisitordetail = "SELECT ID,lpad(GATE_PASS_NO,6,0) as GATE_PASS_NO,CONTACT_NUMBER,IMG_PATH,PURPOSE,NUM_OF_PERSON,MATERIAL,BELONGINGS,GATE_PASS_DATE,VISITOR_NAME,ORG_NAME,LOCATION,DEPT_ID,TIME_IN,TIME_OUT,EMP_MEET,ID_NUM,STATUS,ROWNUM as RWNUM FROM EBIZ.VISITOR_GATE_PASS WHERE $conditions 1=1 $condition ORDER BY GATE_PASS_NO DESC";
 //die;
 $statement = oci_parse($con, $getvisitordetail);
 oci_execute($statement);
@@ -40,15 +41,15 @@ oci_fetch_all($statement, $res2);
 //echo "<pre>"; print_r($res2);die;
 
 $arr = array();
+//echo "<pre>";print_r($res2);die;
 
 for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
     $arr[] = array('ID' => $res2['ID'][$a], 'GATE_PASS_NO' => $res2['GATE_PASS_NO'][$a], 'GATE_PASS_DATE' => $res2['GATE_PASS_DATE'][$a],
         'VISITOR_NAME' => $res2['VISITOR_NAME'][$a], 'ORG_NAME' => $res2['ORG_NAME'][$a], 'LOCATION' => $res2['LOCATION'][$a],
         'DEPT_ID' => $res2['DEPT_ID'][$a], 'TIME_IN' => $res2['TIME_IN'][$a], 'TIME_OUT' => $res2['TIME_OUT'][$a], 'INITIAL' => $res2['INITIAL'][$a], 'EMP_MEET' => $res2['EMP_MEET'][$a],
         'ID_NUM' => $res2['ID_NUM'][$a], 'STATUS' => $res2['STATUS'][$a], 'CONTACT_NUMBER' => $res2['CONTACT_NUMBER'][$a], 'PURPOSE' => $res2['PURPOSE'][$a],
-        'NUM_OF_PERSON' => $res2['NUM_OF_PERSON'][$a], 'MATERIAL' => $res2['MATERIAL'][$a], 'BELONGINGS' => $res2['BELONGINGS'][$a]);
+        'NUM_OF_PERSON' => $res2['NUM_OF_PERSON'][$a], 'MATERIAL' => $res2['MATERIAL'][$a], 'BELONGINGS' => $res2['BELONGINGS'][$a],'IMG_PATH' => $res2['IMG_PATH'][$a]);
 }
-//echo "<pre>";print_r($arr);die;
 //echo '<pre>' ;print_r($_POST);
 ?>
 
@@ -58,37 +59,46 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                      <div class="form-bottom table-responsive" style="width:100%; padding:0px;">
                         <table class="table" width="100%" cellspacing="1" cellpadding="0" border="0" align="center" id="print-padd">
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Gate Pass Number :</td>
+                                <td width="25%" style='vertical-align:middle;padding-right: 3%;' class="print-padd" rowspan="7">
+									<?php 
+											if(!empty($arr[0]['IMG_PATH']))
+												$url = $arr[0]['IMG_PATH'];
+											else	
+												$url = 'images/noimage.jpg';
+								    ?>
+									<img src='<?php echo $url; ?>' class='img' height='150' width='150'>
+								</td>
+                                <td width="17%" align="right" valign="middle" class="print-padd">Gate Pass Number :</td>
                                 <td width="20%" align="left" valign="middle"><?php echo $arr[0]['GATE_PASS_NO']; ?></td>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Gate Pass Date :</td>
-                                <td width="30%" align="left" valign="middle"><?php echo $arr[0]['GATE_PASS_DATE']; ?></td>
+                                <td width="15%" align="right" valign="middle" class="print-padd">Gate Pass Date :</td>
+                                <td width="20%" align="left" valign="middle"><?php echo $arr[0]['GATE_PASS_DATE']; ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Visitor Name :</td>
+                                <td align="right" valign="middle" class="print-padd">Visitor Name :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper($arr[0]['VISITOR_NAME']); ?></td>
                                 <td align="right" valign="middle" class="print-padd">Organization Name :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper($arr[0]['ORG_NAME']); ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Location :</td>
+                                <td  align="right" valign="middle" class="print-padd">Location :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper($arr[0]['LOCATION']); ?></td>
                                 <td align="right" valign="middle" class="print-padd">Contact Number :</td>
                                 <td align="left" valign="middle"><?php echo $arr[0]['CONTACT_NUMBER']; ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Whom to Meet :</td>
+                                <td  align="right" valign="middle" class="print-padd">Whom to Meet :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper(getempname($arr[0]['EMP_MEET'])); ?></td>
                                 <td align="right" valign="middle" class="print-padd">Purpose :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper($arr[0]['PURPOSE']); ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Department of Visit :</td>
+                                <td  align="right" valign="middle" class="print-padd">Department of Visit :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper(getdeptname($arr[0]['DEPT_ID'])); ?></td>
                                 <td align="right" valign="middle" class="print-padd">Number of Person :</td>
                                 <td align="left" valign="middle"><?php echo $arr[0]['NUM_OF_PERSON']; ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Material Declaration :</td>
+                                <td  align="right" valign="middle" class="print-padd">Material Declaration :</td>
                                 <td align="left" valign="middle"><?php echo strtoupper($arr[0]['BELONGINGS']); ?></td>
                   <!--              <td align="right" valign="middle" class="print-padd">Material Returnable :</td>
                                 <td align="left" valign="middle"><?php //echo $arr[0]['MATERIAL']; ?></td>-->
@@ -96,7 +106,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                 <td align="left" valign="middle"><?php echo $arr[0]['TIME_IN']; ?></td>
                             </tr>
                             <tr>
-                                <td width="25%" align="right" valign="middle" class="print-padd">Time Out :</td>
+                                <td  align="right" valign="middle" class="print-padd">Time Out :</td>
                                 <td align="left" valign="middle"><?php echo $arr[0]['TIME_OUT']; ?></td>
                                 <td align="right" valign="middle" class="print-padd">ID Card Number :</td>
                                 <td align="left" valign="middle"><?php echo $arr[0]['ID_NUM']; ?></td>
@@ -113,7 +123,7 @@ for ($a = 0; $a < count($res2['GATE_PASS_NO']); $a++) {
                                 <td align="left" valign="middle" class="print-padd" height="50px" style="line-height:50px; text-align:left !important;">Visitor Signature :</td>
                             </tr>-->
                             <tr>
-                                <td height="50px" colspan="4" align="left" valign="middle" >
+                                <td height="50px" colspan="5" align="left" valign="middle" >
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
                                   <tr>
 									<td width="20%" height="25" align="center" valign="middle" class="print-padd" style="text-align:center !important;">Visitor Signature :</td>
